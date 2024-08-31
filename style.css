@@ -4,15 +4,55 @@
 }
 
 body {
-  background-color: #212A31
+  background-color: white;
 }
 
-.logo {}
+.navbar {
+  background-color: #0f1111;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-.co {
-  background-color: #748D92;
-  width: 25vw;
-  height: 25vw;
-  margin: 65px 13px;
-  border-radius: 13px;
+.dropdown {
+  background-color: #0f1111;
+  width: 120px;
+  height: 20px;
+  border-radius: 15px;
+  margin-left: 260px;
+  transition: height 0.1s;
+  border: 2px solid white;
+}
+
+.dropdown:hover {
+  height: 330px;
+  border: none;
+}
+
+.button {
+  display: none;
+  position: absolute;
+  bottom:87%;
+  left: 72.3%;
+  background-color: white;
+  border-radius: 5px;
+  border: none;
+  height: 30px;
+  width: 80px;
+  font-size: 10px;
+  font-weight: 700;
+}
+.button-p2 {
+position: absolute;
+  bottom:81.5%;
+  left: 72.3%;
+}
+.button-p3 {
+  position: absolute;
+  bottom:76%;
+  left: 72.3%;
+}
+.dropdown:hover .button {
+  display: block;
 }
