@@ -1,60 +1,72 @@
-let mb = document.getElementById('bcon')
-mb.addEventListener('click',
-function(){
-  let menu = document.getElementById('menu')
-  let menubc = document.getElementById('menubc')
-  let menucl = document.getElementById('menucl')
-  
-  menu.style.width = '65vw'
-  menu.style.visibility = 'visible'
-  menubc.style.visibility = 'visible'
-  menucl.style.display = 'block'
-  
-  menucl.addEventListener('click',
-  function(){
-    menu.style.width = '0vw'
-    menu.style.visibility = 'hidden'
-    menubc.style.visibility = 'hidden'
-    menucl.style.display = 'none'
-  })
-});
+// Initialize ACE editor with a custom Jellyfish-like theme
+const editor = ace.edit("editor");
 
-let items = document.getElementById('item')
-let item1 = document.getElementById('item1')
-let item2 = document.getElementById('item2')
-let item3 = document.getElementById('item3')
-let item4 = document.getElementById('item4')
-let item5 = document.getElementById('item5')
-let item6 = document.getElementById('item6')
-let item7 = document.getElementById('item7')
+// Custom CSS for Jellyfish-like theme
+editor.setTheme("ace/theme/monokai"); // Use Monokai or any dark theme as a base
+editor.session.setMode("ace/mode/javascript");
 
-let search = document.getElementById('search')
+// Apply additional custom styling for the theme
+const css = `
+  .ace-monokai {
+    background-color: #1e1e1e; /* Darker background */
+    color: #dcdcdc; /* Light text */
+  }
+  .ace-monokai .ace_keyword {
+    color: #ff79c6; /* Bright pink for keywords */
+  }
+  .ace-monokai .ace_identifier {
+    color: #f1fa8c; /* Light yellow for identifiers */
+  }
+  .ace-monokai .ace_string {
+    color: #50fa7b; /* Bright green for strings */
+  }
+  .ace-monokai .ace_comment {
+    color: #6272a4; /* Muted blue for comments */
+  }
+  .ace-monokai .ace_function {
+    color: #ffb86c; /* Orange for functions */
+  }
+`;
 
-search.addEventListener('input',
-function(){
-  
-  let input = search.value.toLowerCase().trim()
-  let w = {'apple': item1,
-  'banana': item2,
-  'orange': item3,
-  'mango': item4,
-  'Strawberry': item5,
-  'grapes': item6,
-  'kiwi': item7
+const styleSheet = document.createElement("style");
+styleSheet.type = "text/css";
+styleSheet.innerText = css;
+document.head.appendChild(styleSheet);
+
+
+function runCode() {
+  const code = editor.getValue();
+  const outputArea = document.getElementById("output");
+  outputArea.textContent = ""; // Clear previous output
+
+  // Create a custom console to capture logs
+  const customConsole = {
+    log: function(message) {
+      outputArea.textContent += message + "\n"; // Append each log to the output
+      outputArea.scrollTop = outputArea.scrollHeight; // Auto-scroll to the bottom
+    },
+  };
+
+  try {
+    // Use a self-invoking async function to run the code
+    (async () => {
+      // Ensure the code is executed within a promise-returning async function
+      const result = await new Function("tf", "console", `
+        return (async () => { 
+          try {
+            ${code}
+          } catch (error) {
+            console.log('Error: ' + error.message);
+          }
+        })();
+      `)(tf, customConsole);
+
+      // If there's a result, log it
+      if (result) {
+        outputArea.textContent += `Output:\n${JSON.stringify(result, null, 2)}\n`;
+      }
+    })();
+  } catch (error) {
+    outputArea.textContent = "Error: " + error.message;
   }
-  
-  if (input == ''){
-    items.style.display = 'none'
-  }
-  else {
-    items.style.display = 'flex'
-  }
-  Object.keys(w).forEach(key => {
-    if (key.toLowerCase().includes(input)) {
-      w[key].style.display = 'block'
-    }
-    else {
-      w[key].style.display = 'none'
-    }
-  });
-});
+}
